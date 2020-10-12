@@ -1,24 +1,12 @@
-import 'package:expensereport/widgets/input_transactions.dart';
-import 'package:expensereport/widgets/transaction_list.dart';
+import './widgets/input_transactions.dart';
 import 'package:flutter/material.dart';
+import './models/Transaction.dart';
+import './widgets/showTrans.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget{
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-
-  void startaddnewtransaction(BuildContext ctx ){
-    showModalBottomSheet(context: ctx, builder: (_){
-      return Text("Hey this is your modal screen !!");
-    },);
-
-
-  }
+class MyApp extends StatelessWidget{
+  
 
   Widget build(BuildContext context){
     return MaterialApp(
@@ -26,18 +14,68 @@ class _MyAppState extends State<MyApp> {
         primaryColor: Colors.green,
         fontFamily: 'Georgia',
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Container(
-              width: 100,
-              child: Text("Expense Report Application ",textAlign: TextAlign.center,),
-          ),
-          actions: <Widget>[
-            IconButton(icon: Icon(Icons.add) ,onPressed: ()=>startaddnewtransaction(context), )
-          ],
+      title: "Flutter App",
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget{
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+
+  final List<Transaction> expenses = [
+    Transaction(
+      id: "first",
+      title : "Samose",
+      amount: 100,
+      date: DateTime.now(),
+    ),
+
+    Transaction(
+      id: "second",
+      title : "Chicken Lollipop",
+      amount: 150,
+      date: DateTime.now(),
+    ),
+  ];
+
+  void func(String task, String amount){
+    Transaction obj = new Transaction(
+        id: null,
+        title: task,
+        amount: double.parse(amount),
+        date: DateTime.now()
+    );
+    setState(() {
+      expenses.add(obj);
+    });
+  }
+
+  void startAddNewTransaction(BuildContext ctx ) {
+    showModalBottomSheet(context: ctx, builder: (_) {
+      return InputTransactions(func);
+    });
+  }
+
+   @override
+  Widget build(BuildContext context){
+    return Scaffold(
+      appBar: AppBar(
+        title: Container(
+          width: 100,
+          child: Text("Expense Report Application ",textAlign: TextAlign.center,),
         ),
-        body:SingleChildScrollView(
-          child: Column(
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.add) ,onPressed: ()=>startAddNewTransaction(context)),
+        ],
+      ),
+      body:SingleChildScrollView(
+        child: Column(
           //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
@@ -49,16 +87,29 @@ class _MyAppState extends State<MyApp> {
                 child: Text("Hey this is a chart",textAlign: TextAlign.center,),
               ),
             ),
-            TransactionList(),
+            Column(
+                children:[
+                  Container(
+                    height: 300,
+                    child:ListView.builder(
+                      itemBuilder: (ctx ,index){
+                        return showTrans(expenses[index]);
+                      },
+                      itemCount: expenses.length,
+                    ),
+                  ),
+
+                ]
+            )
           ],
         ),
       ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: (){},
-        ),
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Builder(
+        builder:(context)=> FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: ()=>startAddNewTransaction(context),
+        ),),
     );
   }
 }
