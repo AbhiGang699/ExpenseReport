@@ -17,17 +17,17 @@ class showTrans extends StatelessWidget{
             decoration: BoxDecoration(
               border: Border.all(
                 width: 2,
-                color: Colors.purple,
+                color: Theme.of(context).primaryColor,
               ),
             ),
             child: Text("\$ "+trans.amount.toString(),
-              style: TextStyle(color: Colors.purple),
+              style: TextStyle(color: Theme.of(context).primaryColor),
               ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(trans.title),
+              Text(trans.title,),
               Text(DateFormat('MMM dd, yyyy').format(trans.date))
             ],
           ),

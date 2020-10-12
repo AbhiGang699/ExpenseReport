@@ -45,7 +45,7 @@ class _TransactionList extends State<TransactionList>{
       children:[
         InputTransactions(func),
         Container(
-          height: 300,
+          height: double.infinity,
           child:ListView.builder(
                 itemBuilder: (ctx ,index){
                   return showTrans(expenses[index]);

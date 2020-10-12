@@ -7,24 +7,34 @@ import '../widgets/transaction_list.dart';
 class InputTransactions extends StatefulWidget{
   final Function func;
   InputTransactions(this.func);
-  _InputTransactions createState()=>_InputTransactions(func);
+  _InputTransactions createState()=>_InputTransactions();
 }
 
 class _InputTransactions extends State<InputTransactions>{
 
-  final Function func;
-
   TextEditingController inputTitle = TextEditingController();
   TextEditingController inputAmount= TextEditingController();
 
-  _InputTransactions(this.func);
+
 
   void localFunction(){
-    func(inputTitle.text,inputAmount.text);
+    String taitel;
+    double amnt;
+    try{
+      taitel=inputTitle.text;
+      amnt=double.parse(inputAmount.text) ;
+      if(taitel.isEmpty || amnt <=0 )return ;
+    }
+    catch(e){
+      return;
+    }
+
+    widget.func(inputTitle.text,inputAmount.text);
     setState(() {
       inputAmount.clear();
       inputTitle.clear();
     });
+    Navigator.of(context).pop();
   }
 
 
@@ -38,10 +48,14 @@ class _InputTransactions extends State<InputTransactions>{
               TextField(
                 decoration: InputDecoration(labelText: "Title" ),
                 controller: inputTitle,
+                keyboardType: TextInputType.text,
+                onSubmitted: (_)=>localFunction,
               ),
               TextField(
                 decoration: InputDecoration(labelText: "Amount"),
                 controller: inputAmount,
+                keyboardType: TextInputType.number,
+                  onSubmitted: (_)=>localFunction
               ),
             ],
           ),

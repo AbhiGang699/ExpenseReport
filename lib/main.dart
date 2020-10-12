@@ -11,9 +11,12 @@ class MyApp extends StatelessWidget{
   Widget build(BuildContext context){
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: Colors.green,
-        fontFamily: 'Georgia',
+        //primaryColor: Colors.green,
+        fontFamily: 'Monotype Corsiva',
+        primarySwatch: Colors.purple,
+        accentColor: Colors.amber,
       ),
+      
       title: "Flutter App",
       home: MyHomePage(),
     );
@@ -58,7 +61,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void startAddNewTransaction(BuildContext ctx ) {
     showModalBottomSheet(context: ctx, builder: (_) {
-      return InputTransactions(func);
+      return GestureDetector(
+          onTap: (){},
+          child : InputTransactions(func),
+          behavior: HitTestBehavior.opaque,
+      );
     });
   }
 
@@ -90,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Column(
                 children:[
                   Container(
-                    height: 300,
+                    height: 500,
                     child:ListView.builder(
                       itemBuilder: (ctx ,index){
                         return showTrans(expenses[index]);
