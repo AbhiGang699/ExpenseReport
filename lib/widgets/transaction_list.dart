@@ -1,9 +1,7 @@
-import 'dart:math';
-
-import 'package:expensereport/models/Transaction.dart';
-import 'package:expensereport/widgets/input_transactions.dart';
+import './input_transactions.dart';
 import 'package:flutter/material.dart';
 import './showTrans.dart';
+import '../models/Transaction.dart';
 
 
 class TransactionList extends StatefulWidget{
@@ -13,7 +11,7 @@ class TransactionList extends StatefulWidget{
 class _TransactionList extends State<TransactionList>{
 
   final List<Transaction> expenses = [
-    Transaction(
+    /*Transaction(
       id: "first",
       title : "Samose",
       amount: 100,
@@ -25,7 +23,7 @@ class _TransactionList extends State<TransactionList>{
       title : "Chicken Lollipop",
       amount: 150,
       date: DateTime.now(),
-    ),
+    ),*/
   ];
 
   void func(String task, String amount){
@@ -45,10 +43,17 @@ class _TransactionList extends State<TransactionList>{
       children:[
         InputTransactions(func),
         Container(
-          height: double.infinity,
-          child:ListView.builder(
+          height: 100,
+          child:expenses.isEmpty ?
+              Container(
+                height: 300,
+                child: Image.asset('assets/images/nothingHere.png' ,
+                  fit: BoxFit.cover,
+                ),
+              )
+              : ListView.builder(
                 itemBuilder: (ctx ,index){
-                  return showTrans(expenses[index]);
+                  return showTrans(expenses[index],null);
                 },
                 itemCount: expenses.length,
             ),

@@ -2,6 +2,7 @@ import './widgets/input_transactions.dart';
 import 'package:flutter/material.dart';
 import './models/Transaction.dart';
 import './widgets/showTrans.dart';
+import './widgets/chart.dart';
 
 void main() => runApp(MyApp());
 
@@ -12,12 +13,11 @@ class MyApp extends StatelessWidget{
     return MaterialApp(
       theme: ThemeData(
         //primaryColor: Colors.green,
+        brightness: Brightness.light ,
         fontFamily: 'Monotype Corsiva',
         primarySwatch: Colors.purple,
         accentColor: Colors.amber,
       ),
-      
-      title: "Flutter App",
       home: MyHomePage(),
     );
   }
@@ -33,29 +33,35 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<Transaction> expenses = [
     Transaction(
-      id: "first",
+      id: DateTime.now().toString(),
       title : "Samose",
       amount: 100,
-      date: DateTime.now(),
+      date: DateTime.now().subtract(Duration(days: 4)),
     ),
 
     Transaction(
-      id: "second",
+      id: DateTime.now().toString(),
       title : "Chicken Lollipop",
       amount: 150,
       date: DateTime.now(),
     ),
   ];
 
-  void func(String task, String amount){
+  void func(String task, String amount,DateTime date){
     Transaction obj = new Transaction(
-        id: null,
+        id: date.toString(),
         title: task,
         amount: double.parse(amount),
-        date: DateTime.now()
+        date: date,
     );
     setState(() {
       expenses.add(obj);
+    });
+  }
+
+  void deleteTransaction(String trans_id){
+    setState(() {
+      expenses.removeWhere((element) =>element.id==trans_id);
     });
   }
 
@@ -65,9 +71,11 @@ class _MyHomePageState extends State<MyHomePage> {
           onTap: (){},
           child : InputTransactions(func),
           behavior: HitTestBehavior.opaque,
+        onDoubleTap: ()=>AnimatedIcons.close_menu,
       );
     });
   }
+
 
    @override
   Widget build(BuildContext context){
@@ -75,8 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Container(
           width: 100,
-          child: Text("Expense Report Application ",textAlign: TextAlign.center,),
-        ),
+          child: Text('Expense Report' , style: TextStyle(fontSize: 14),),
+            ),
         actions: <Widget>[
           IconButton(icon: Icon(Icons.add) ,onPressed: ()=>startAddNewTransaction(context)),
         ],
@@ -88,19 +96,30 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             Card(
               elevation: 5,
-              color: Colors.blue,
+              //color: Colors.blue,
               child: Container(
                 width: double.infinity,
-                child: Text("Hey this is a chart",textAlign: TextAlign.center,),
+                child: Chart(expenses),
               ),
             ),
             Column(
                 children:[
                   Container(
                     height: 500,
-                    child:ListView.builder(
+                    child:expenses.isEmpty ?
+                    Container(
+                      height: 300,
+                      child:Column(
+                       children : [
+                         Text("Nothing to show yet !!! ",style: TextStyle(fontWeight: FontWeight.bold),),
+                         SizedBox(height: 10),
+                         Image.asset('assets/images/nothingHere.png' ,
+                        fit: BoxFit.contain,
+                      ),
+                    ]),)
+                        : ListView.builder(
                       itemBuilder: (ctx ,index){
-                        return showTrans(expenses[index]);
+                        return showTrans(expenses[index],deleteTransaction);
                       },
                       itemCount: expenses.length,
                     ),
