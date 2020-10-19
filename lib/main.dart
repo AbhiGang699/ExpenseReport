@@ -31,6 +31,7 @@ class MyHomePage extends StatefulWidget{
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  bool _showChart=false;
   final List<Transaction> expenses = [
     Transaction(
       id: DateTime.now().toString(),
@@ -71,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onTap: (){},
           child : InputTransactions(func),
           behavior: HitTestBehavior.opaque,
-        onDoubleTap: ()=>AnimatedIcons.close_menu,
+        // onDoubleTap: ()=>AnimatedIcons.close_menu,
       );
     });
   }
@@ -79,8 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
    @override
   Widget build(BuildContext context){
+    bool _isLandscape = (MediaQuery.of(context).orientation == Orientation.landscape);
+    var _bodyHeight = MediaQuery.of(context).size.height;
+    var _bodyWidth =  MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: _bodyHeight * 0.1,
         title: Container(
           width: 100,
           child: Text('Expense Report' , style: TextStyle(fontSize: 14),),
@@ -90,44 +95,72 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body:SingleChildScrollView(
-        child: Column(
-          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            Card(
-              elevation: 5,
-              //color: Colors.blue,
-              child: Container(
-                width: double.infinity,
-                child: Chart(expenses),
-              ),
-            ),
-            Column(
-                children:[
-                  Container(
-                    height: 500,
-                    child:expenses.isEmpty ?
-                    Container(
-                      height: 300,
-                      child:Column(
-                       children : [
-                         Text("Nothing to show yet !!! ",style: TextStyle(fontWeight: FontWeight.bold),),
-                         SizedBox(height: 10),
-                         Image.asset('assets/images/nothingHere.png' ,
-                        fit: BoxFit.contain,
-                      ),
-                    ]),)
-                        : ListView.builder(
-                      itemBuilder: (ctx ,index){
-                        return showTrans(expenses[index],deleteTransaction);
-                      },
-                      itemCount: expenses.length,
-                    ),
+        child: Container(
+          height: _bodyHeight*0.9,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              if(_isLandscape==true)
+              Container(
+                  height: _bodyHeight*0.05,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: _bodyHeight*0.05),
+                      Text("Show Chart : "),
+                      Switch(
+                          value: _showChart,
+                          onChanged: (val){
+                        setState(() {
+                          _showChart=val;
+                        });
+                      }),
+                      SizedBox(height: _bodyHeight*0.05,),
+                    ],
                   ),
-
-                ]
-            )
-          ],
+                ),
+              if(_showChart== true && _isLandscape==true || _isLandscape==false)
+              Card(
+                elevation: 5,
+                //color: Colors.blue,
+                child: Container(
+                  height: (_isLandscape )? _bodyHeight*0.7:_bodyHeight*0.25,
+                  width: double.infinity,
+                  child: Chart(expenses),
+                ),
+              )
+              ,
+              if(_isLandscape==true && _showChart==false || _isLandscape==false)
+              Column(
+                  children:[
+                      expenses.isEmpty ?
+                      Container(
+                        width: _bodyWidth*0.7,
+                        height: _isLandscape ? _bodyHeight*0.7 : _bodyHeight*0.4,
+                        child:Column(
+                         children : [
+                           SizedBox(height: _bodyHeight*0.02),
+                           Text("Nothing to show yet !!! ",style: TextStyle(fontWeight: FontWeight.bold),),
+                           SizedBox(height: _bodyHeight*0.02),
+                           Image.asset('assets/images/nothingHere.png' ,
+                          fit: BoxFit.cover,
+                        ),
+                      ]),
+                      )
+                          : Container(
+                        height: _isLandscape ? _bodyHeight*0.7 : _bodyHeight*0.5,
+                            child:ListView.builder(
+                        itemBuilder: (ctx ,index){
+                            return showTrans(expenses[index],deleteTransaction);
+                        },
+                        itemCount: expenses.length,
+                      ),
+                           ),
+                  ]
+              )
+            ],
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

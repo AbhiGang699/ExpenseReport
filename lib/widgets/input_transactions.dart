@@ -53,60 +53,70 @@ class _InputTransactions extends State<InputTransactions>{
 
 
   Widget build(BuildContext context){
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Card(
-          child: Column(
-            children: [
-              TextField(
-                decoration: InputDecoration(labelText: "Title" ),
-                controller: inputTitle,
-                keyboardType: TextInputType.text,
-                onSubmitted: (_)=>localFunction,
-              ),
-              TextField(
-                decoration: InputDecoration(labelText: "Amount"),
-                controller: inputAmount,
-                keyboardType: TextInputType.number,
-                  onSubmitted: (_)=>localFunction
-              ),
-            ],
-          ),
-        ),
-        
-        Row(
+    return SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Expanded(
+            Card(
               child: Container(
-                  width: 150,
-                  padding: EdgeInsets.all(5),
-                  child: (selectedDate==null )?
-                  Text("No Date Chosen ! ") :
-                  Text('Chosen Date : ${DateFormat.yMd().format(selectedDate)}')
+                padding: EdgeInsets.only(
+                  left: 5,
+                  right: 5,
+                  top: 5,
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: Column(
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(labelText: "Title" ),
+                      controller: inputTitle,
+                      keyboardType: TextInputType.text,
+                      onSubmitted: (_)=>localFunction,
+                    ),
+                    TextField(
+                      decoration: InputDecoration(labelText: "Amount"),
+                      controller: inputAmount,
+                      keyboardType: TextInputType.number,
+                        onSubmitted: (_)=>localFunction
+                    ),
+                  ],
+                ),
               ),
             ),
-            FlatButton(
-              child: Text("Choose Date",
-                style: TextStyle(color: Theme.of(context).primaryColor , fontWeight: FontWeight.bold),
+            
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                      width: 150,
+                      padding: EdgeInsets.all(5),
+                      child: (selectedDate==null )?
+                      Text("No Date Chosen ! ") :
+                      Text('Chosen Date : ${DateFormat.yMd().format(selectedDate)}')
+                  ),
+                ),
+                FlatButton(
+                  child: Text("Choose Date",
+                    style: TextStyle(color: Theme.of(context).primaryColor , fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: _justAnotherFunction,
+                )
+              ],
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              child: RaisedButton(
+                elevation: 5,
+                padding: EdgeInsets.all(10),
+                color: Theme.of(context).primaryColor,
+                child: Text("Add Expense " ,
+                  style: TextStyle( color: Colors.white),
+                ) ,
+                onPressed: localFunction,
               ),
-              onPressed: _justAnotherFunction,
-            )
+            ),
           ],
         ),
-        Container(
-          margin: EdgeInsets.all(10),
-          child: RaisedButton(
-            elevation: 5,
-            padding: EdgeInsets.all(10),
-            color: Theme.of(context).primaryColor,
-            child: Text("Add Expense " ,
-              style: TextStyle( color: Colors.white),
-            ) ,
-            onPressed: localFunction,
-          ),
-        ),
-      ],
     );
   }
 }
